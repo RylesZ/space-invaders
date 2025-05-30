@@ -3,13 +3,9 @@ const config = {
     width: 600,
     height: 450,
     parent: 'gameCanvas',
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
     physics: {
         default: 'arcade',
-        arcade: { debug: false }
+        arcade: { debug: false } // Desactiva les caixes de hitbox
     },
     scene: [MenuScene, GameScene]
 };
@@ -30,11 +26,8 @@ class MenuScene extends Phaser.Scene {
         this.add.rectangle(0, 0, 600, 450, 0x000000).setOrigin(0);
         this.add.text(300, 200, 'Space Invaders', { fontSize: '32px', color: '#fff' }).setOrigin(0.5);
         this.add.text(300, 250, 'WASD per moure, Espai per disparar', { fontSize: '16px', color: '#fff' }).setOrigin(0.5);
-        this.add.text(300, 300, 'Prem Espai o toca la pantalla per començar', { fontSize: '16px', color: '#fff' }).setOrigin(0.5);
-
-        // Inici amb teclat o toc
+        this.add.text(300, 300, 'Prem Espai per començar', { fontSize: '16px', color: '#fff' }).setOrigin(0.5);
         this.input.keyboard.on('keydown-SPACE', () => this.scene.start('GameScene'));
-        this.input.on('pointerdown', () => this.scene.start('GameScene'));
     }
 }
 
@@ -78,65 +71,22 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.overlap(this.bullets, this.enemies, this.hitEnemy, null, this);
         this.physics.add.overlap(this.enemyBullets, this.player, this.hitPlayer, null, this);
-
-        // Controls tàctils
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        this.isMovingUp = false;
-        this.isMovingDown = false;
-        this.isShooting = false;
-
-        // Botons tàctils
-        const buttonSize = 60;
-        const buttonMargin = 20;
-
-        // Botó esquerra
-        this.leftButton = this.add.rectangle(buttonMargin + buttonSize / 2, 450 - buttonMargin - buttonSize / 2, buttonSize, buttonSize, 0x6666ff, 0.5).setInteractive();
-        this.leftButton.on('pointerdown', () => this.isMovingLeft = true);
-        this.leftButton.on('pointerup', () => this.isMovingLeft = false);
-        this.add.text(buttonMargin + buttonSize / 2, 450 - buttonMargin - buttonSize / 2, '◄', { fontSize: '24px', color: '#fff' }).setOrigin(0.5);
-
-        // Botó dreta
-        this.rightButton = this.add.rectangle(buttonMargin + buttonSize * 1.5 + buttonMargin, 450 - buttonMargin - buttonSize / 2, buttonSize, buttonSize, 0x6666ff, 0.5).setInteractive();
-        this.rightButton.on('pointerdown', () => this.isMovingRight = true);
-        this.rightButton.on('pointerup', () => this.isMovingRight = false);
-        this.add.text(buttonMargin + buttonSize * 1.5 + buttonMargin, 450 - buttonMargin - buttonSize / 2, '►', { fontSize: '24px', color: '#fff' }).setOrigin(0.5);
-
-        // Botó amunt
-        this.upButton = this.add.rectangle(buttonMargin + buttonSize * 3 + buttonMargin * 2, 450 - buttonMargin - buttonSize / 2, buttonSize, buttonSize, 0x6666ff, 0.5).setInteractive();
-        this.upButton.on('pointerdown', () => this.isMovingUp = true);
-        this.upButton.on('pointerup', () => this.isMovingUp = false);
-        this.add.text(buttonMargin + buttonSize * 3 + buttonMargin * 2, 450 - buttonMargin - buttonSize / 2, '▲', { fontSize: '24px', color: '#fff' }).setOrigin(0.5);
-
-        // Botó avall
-        this.downButton = this.add.rectangle(buttonMargin + buttonSize * 4 + buttonMargin * 3, 450 - buttonMargin - buttonSize / 2, buttonSize, buttonSize, 0x6666ff, 0.5).setInteractive();
-        this.downButton.on('pointerdown', () => this.isMovingDown = true);
-        this.downButton.on('pointerup', () => this.isMovingDown = false);
-        this.add.text(buttonMargin + buttonSize * 4 + buttonMargin * 3, 450 - buttonMargin - buttonSize / 2, '▼', { fontSize: '24px', color: '#fff' }).setOrigin(0.5);
-
-        // Botó disparar
-        this.shootButton = this.add.rectangle(600 - buttonMargin - buttonSize / 2, 450 - buttonMargin - buttonSize / 2, buttonSize, buttonSize, 0xff0000, 0.5).setInteractive();
-        this.shootButton.on('pointerdown', () => this.isShooting = true);
-        this.shootButton.on('pointerup', () => this.isShooting = false);
-        this.add.text(600 - buttonMargin - buttonSize / 2, 450 - buttonMargin - buttonSize / 2, '🔥', { fontSize: '24px', color: '#fff' }).setOrigin(0.5);
     }
     update(time) {
-        // Controls amb teclat
-        if (this.cursors.left.isDown || this.isMovingLeft) this.player.setVelocityX(-200);
-        else if (this.cursors.right.isDown || this.isMovingRight) this.player.setVelocityX(200);
-        else if (!this.isMovingLeft && !this.isMovingRight) this.player.setVelocityX(0);
-
-        if (this.cursors.up.isDown || this.isMovingUp) this.player.setVelocityY(-200);
-        else if (this.cursors.down.isDown || this.isMovingDown) this.player.setVelocityY(200);
-        else if (!this.isMovingUp && !this.isMovingDown) this.player.setVelocityY(0);
-
-        if (Phaser.Input.Keyboard.JustDown(this.cursors.shoot) || this.isShooting) {
-            let bullet = this.bullets.create(this.player.x, this.player.y - 20, 'bullet').setScale(0.05);
-            bullet.setVelocityY(-400);
-            this.isShooting = false; // Evita disparar contínuament amb un sol toc
+        if (this.cursors.left.isDown) this.player.setVelocityX(-200);
+        else if (this.cursors.right.isDown) this.player.setVelocityX(200);
+        else if (this.cursors.up.isDown) this.player.setVelocityY(-200);
+        else if (this.cursors.down.isDown) this.player.setVelocityY(200);
+        else {
+            this.player.setVelocityX(0);
+            this.player.setVelocityY(0);
         }
 
-        // Resta del codi sense canvis
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.shoot)) {
+            let bullet = this.bullets.create(this.player.x, this.player.y - 20, 'bullet').setScale(0.05);
+            bullet.setVelocityY(-400);
+        }
+
         if (time - this.lastEnemyShot > 1500) {
             let enemy = this.enemies.getChildren()[Math.floor(Math.random() * this.enemies.getLength())];
             if (enemy) {
