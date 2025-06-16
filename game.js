@@ -11,8 +11,8 @@ class MenuScene extends Phaser.Scene {
     create() {
         this.add.image(300, 225, 'background').setScale(0.75);
         this.add.text(300, 100, 'Space Invaders', { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
-        this.add.text(300, 200, 'Controles:\nOrdenador: WASD para mover, Espacio para disparar', { fontSize: '12px', fill: '#fff', align: 'center' }).setOrigin(0.5);
-        this.add.text(300, 300, 'Presiona ESPACIO para empezar', { fontSize: '12px', fill: '#fff' }).setOrigin(0.5);
+        this.add.text(300, 200, 'Controles:\nOrdenador: WASD per moure, Espai per disparar', { fontSize: '12px', fill: '#fff', align: 'center' }).setOrigin(0.5);
+        this.add.text(300, 300, 'Presiona ESPAI per començar', { fontSize: '12px', fill: '#fff' }).setOrigin(0.5);
         this.input.keyboard.on('keydown-SPACE', () => this.scene.start('GameScene'));
     }
 }
@@ -185,7 +185,7 @@ class GameScene extends Phaser.Scene {
         bullet.destroy();
         enemy.destroy();
         this.score += 10;
-        this.scoreText.setText('Puntuación: ' + this.score);
+        this.scoreText.setText('Puntuació: ' + this.score);
         if (this.enemies.countActive() === 0) {
             this.gameOver('¡Ganaste!');
         }
@@ -196,7 +196,7 @@ class GameScene extends Phaser.Scene {
 
         if (enemyBullet) enemyBullet.destroy();
         this.player.lives--;
-        this.livesText.setText('Vidas: ' + this.player.lives);
+        this.livesText.setText('Vides: ' + this.player.lives);
 
         this.player.isInvulnerable = true;
         this.tweens.add({
@@ -219,7 +219,7 @@ class GameScene extends Phaser.Scene {
     gameOver(message) {
         this.physics.pause();
         this.add.text(300, 225, message, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5);
-        this.add.text(300, 275, 'Presiona ESPACIO para reiniciar', { fontSize: '12px', fill: '#fff' }).setOrigin(0.5);
+        this.add.text(300, 275, 'Presiona ESPAI per reiniciar', { fontSize: '12px', fill: '#fff' }).setOrigin(0.5);
         this.input.keyboard.on('keydown-SPACE', () => this.scene.start('MenuScene'));
     }
 }
